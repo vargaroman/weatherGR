@@ -20,7 +20,7 @@ struct WeatherDetail2 : Codable {
 	let visibility : Int?
 	let wind : Wind?
 	let clouds : Clouds?
-	let dt : Int?
+	let dt : Double?
 	let sys : Sys?
 	let id : Int?
 	let name : String?
@@ -51,7 +51,7 @@ struct WeatherDetail2 : Codable {
 		visibility = try values.decodeIfPresent(Int.self, forKey: .visibility)
 		wind = try values.decodeIfPresent(Wind.self, forKey: .wind)
 		clouds = try values.decodeIfPresent(Clouds.self, forKey: .clouds)
-		dt = try values.decodeIfPresent(Int.self, forKey: .dt)
+		dt = try values.decodeIfPresent(Double.self, forKey: .dt)
 		sys = try values.decodeIfPresent(Sys.self, forKey: .sys)
 		id = try values.decodeIfPresent(Int.self, forKey: .id)
 		name = try values.decodeIfPresent(String.self, forKey: .name)

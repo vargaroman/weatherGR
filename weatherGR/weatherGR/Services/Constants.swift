@@ -12,4 +12,7 @@ class Constants {
     //weather API key
     static let weatherAPIKey = "31ef20f69ed85353c00e386a29d49927"
     static let weatherAPILink = "https://api.openweathermap.org/data/2.5/weather?"
+    static let forecastAPILink = "https://api.openweathermap.org/data/2.5/forecast?"
+    static let oneCallAPILink = "https://api.openweathermap.org/data/2.5/onecall?"
+
 }
