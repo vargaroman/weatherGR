@@ -7,8 +7,10 @@
 //
 
 import UIKit
+import CoreLocation
+import CoreData
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate {
+class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate,CLLocationManagerDelegate  {
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
@@ -18,12 +20,52 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     var currentWeather: WeatherDetail2?
     var dailyWeather: [Daily]?
+    var searchHistory: [NSManagedObject] = []
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.title = "WeatherGR"
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "historyIcon"), style: .plain, target: self, action: #selector(historyButtonTapped))
         searchBar.delegate = self
-        checkWeather(placeName: "London")
+        if let geoLocation = LocationManager.shared.coordinates {
+            checkWeather(lat: String(geoLocation.latitude), lon: String(geoLocation.longitude))
+        } else {
+            checkWeather(placeName: "Kosice")
+        }
         // Do any additional setup after loading the view.
+    }
+    
+    @objc func historyButtonTapped(){
+        self.performSegue(withIdentifier: "goToHistory", sender: searchHistory)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "goToHistory" {
+            let vc = segue.destination as? HistoryViewController
+            vc?.history = sender as! [NSManagedObject]
+        }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+      super.viewWillAppear(animated)
+      
+      guard let appDelegate =
+        UIApplication.shared.delegate as? AppDelegate else {
+          return
+      }
+        let managedContext =
+        appDelegate.persistentContainer.viewContext
+      
+      let fetchRequest =
+        NSFetchRequest<NSManagedObject>(entityName: "SearchHistory")
+      
+    do {
+        searchHistory = try managedContext.fetch(fetchRequest)
+      } catch let error as NSError {
+        print("Could not fetch. \(error), \(error.userInfo)")
+      }
+        
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -44,7 +86,19 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         NetworkManager().getActualWeather(placeName: placeName) { [weak self] (weather) in
             self?.currentWeather = weather
             DispatchQueue.main.async {
-                self?.temperatureLabel.text = "\(weather.main?.temp ?? 0)"
+                self?.temperatureLabel.text = "\(weather.main?.temp?.rounded() ?? 0) ºC"
+                self?.setBackgroundImage(weather: weather.weather?.first?.main ?? "")
+                self?.placeLabel.text = weather.name ?? ""
+                self?.checkWeatherForDays()
+            }
+        }
+    }
+    
+    func checkWeather(lat: String, lon: String) {
+        NetworkManager().getActualWeather(lat: lat, lon: lon) { [weak self] (weather) in
+            self?.currentWeather = weather
+            DispatchQueue.main.async {
+                self?.temperatureLabel.text = "\(weather.main?.temp?.rounded() ?? 0) ºC"
                 self?.setBackgroundImage(weather: weather.weather?.first?.main ?? "")
                 self?.placeLabel.text = weather.name ?? ""
                 self?.checkWeatherForDays()
@@ -71,9 +125,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         case "Rain":
             self.weatherImageView.image = UIImage(named: "Rainy")
         case "Snow":
-            self.weatherImageView.image = UIImage(named: "Drizzle")
+            self.weatherImageView.image = UIImage(named: "Snowing")
         case "Clouds":
-            self.weatherImageView.image = UIImage(named: "Drizzle")
+            self.weatherImageView.image = UIImage(named: "Cloudy")
         case "Clear":
             self.weatherImageView.image = UIImage(named: "ClearSky")
         default:
@@ -86,6 +140,33 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         checkWeather(placeName: searchBar.text ?? "")
+        save(text: searchBar.text ?? "")
+    }
+    
+    func save(text: String) {
+        guard let appDelegate =
+        UIApplication.shared.delegate as? AppDelegate else {
+            return
+        }
+        let date = Date()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "dd.MM.yyyy"
+        let managedContext =
+        appDelegate.persistentContainer.viewContext
+        let entity =
+        NSEntityDescription.entity(forEntityName: "SearchHistory",
+                                   in: managedContext)!
+      
+        let newRow = NSManagedObject(entity: entity,
+                                   insertInto: managedContext)
+        newRow.setValue(text, forKeyPath: "text")
+        newRow.setValue(formatter.string(from: date), forKey: "date")
+        do {
+            try managedContext.save()
+            searchHistory.append(newRow)
+        } catch let error as NSError {
+            print("Could not save. \(error), \(error.userInfo)")
+        }
     }
 }
 
