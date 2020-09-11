@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -19,6 +19,11 @@
 		9489CB99250A7BD5001755B5 /* weatherGR.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 9489CB97250A7BD5001755B5 /* weatherGR.xcdatamodeld */; };
 		9489CB9B250A81D3001755B5 /* HistoryViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9489CB9A250A81D3001755B5 /* HistoryViewController.swift */; };
 		9489CB9D250A82A9001755B5 /* HistoryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9489CB9C250A82A9001755B5 /* HistoryTableViewCell.swift */; };
+		9489CBA1250B52BD001755B5 /* TodayWeatherTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9489CBA0250B52BD001755B5 /* TodayWeatherTableViewCell.swift */; };
+		9489CBA3250B657D001755B5 /* BasicViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9489CBA2250B657D001755B5 /* BasicViewController.swift */; };
+		9489CBA5250B664E001755B5 /* UIView+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9489CBA4250B664E001755B5 /* UIView+Extension.swift */; };
+		9489CBA7250B68C0001755B5 /* InitialViewController+Functionality.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9489CBA6250B68C0001755B5 /* InitialViewController+Functionality.swift */; };
+		9489CBA9250B6C39001755B5 /* Date+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9489CBA8250B6C39001755B5 /* Date+Extension.swift */; };
 		94ADC20225097ACE002C095E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADC20125097ACE002C095E /* AppDelegate.swift */; };
 		94ADC20425097ACE002C095E /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADC20325097ACE002C095E /* SceneDelegate.swift */; };
 		94ADC20625097ACE002C095E /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94ADC20525097ACE002C095E /* ViewController.swift */; };
@@ -50,6 +55,11 @@
 		9489CB98250A7BD5001755B5 /* weatherGR.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = weatherGR.xcdatamodel; sourceTree = "<group>"; };
 		9489CB9A250A81D3001755B5 /* HistoryViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryViewController.swift; sourceTree = "<group>"; };
 		9489CB9C250A82A9001755B5 /* HistoryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryTableViewCell.swift; sourceTree = "<group>"; };
+		9489CBA0250B52BD001755B5 /* TodayWeatherTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayWeatherTableViewCell.swift; sourceTree = "<group>"; };
+		9489CBA2250B657D001755B5 /* BasicViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BasicViewController.swift; sourceTree = "<group>"; };
+		9489CBA4250B664E001755B5 /* UIView+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extension.swift"; sourceTree = "<group>"; };
+		9489CBA6250B68C0001755B5 /* InitialViewController+Functionality.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "InitialViewController+Functionality.swift"; sourceTree = "<group>"; };
+		9489CBA8250B6C39001755B5 /* Date+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Extension.swift"; sourceTree = "<group>"; };
 		94ADC1FE25097ACE002C095E /* weatherGR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = weatherGR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		94ADC20125097ACE002C095E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		94ADC20325097ACE002C095E /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -95,6 +105,9 @@
 			children = (
 				942A196D250A538500C507C2 /* Integer+Extension.swift */,
 				942A196F250A552700C507C2 /* Float+Extension.swift */,
+				9489CBA2250B657D001755B5 /* BasicViewController.swift */,
+				9489CBA4250B664E001755B5 /* UIView+Extension.swift */,
+				9489CBA8250B6C39001755B5 /* Date+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -106,6 +119,8 @@
 				94ADC20525097ACE002C095E /* ViewController.swift */,
 				9489CB9A250A81D3001755B5 /* HistoryViewController.swift */,
 				9489CB9C250A82A9001755B5 /* HistoryTableViewCell.swift */,
+				9489CBA0250B52BD001755B5 /* TodayWeatherTableViewCell.swift */,
+				9489CBA6250B68C0001755B5 /* InitialViewController+Functionality.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -194,6 +209,7 @@
 				94ADC1FA25097ACE002C095E /* Sources */,
 				94ADC1FB25097ACE002C095E /* Frameworks */,
 				94ADC1FC25097ACE002C095E /* Resources */,
+				BD8C55D069F4667C8B3CEB46 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -273,6 +289,23 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
+		BD8C55D069F4667C8B3CEB46 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-weatherGR/Pods-weatherGR-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-weatherGR/Pods-weatherGR-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-weatherGR/Pods-weatherGR-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -286,6 +319,7 @@
 				94ADC227250A1B03002C095E /* Main.swift in Sources */,
 				94ADC22C250A1B03002C095E /* Sys.swift in Sources */,
 				9489CB9B250A81D3001755B5 /* HistoryViewController.swift in Sources */,
+				9489CBA1250B52BD001755B5 /* TodayWeatherTableViewCell.swift in Sources */,
 				94ADC219250A062C002C095E /* Constants.swift in Sources */,
 				94ADC20625097ACE002C095E /* ViewController.swift in Sources */,
 				9489CB9D250A82A9001755B5 /* HistoryTableViewCell.swift in Sources */,
@@ -293,14 +327,18 @@
 				942A196C250A330C00C507C2 /* NextDaysWeather.swift in Sources */,
 				94ADC20225097ACE002C095E /* AppDelegate.swift in Sources */,
 				94ADC21D250A17D2002C095E /* NetworkManager.swift in Sources */,
+				9489CBA5250B664E001755B5 /* UIView+Extension.swift in Sources */,
 				94ADC20425097ACE002C095E /* SceneDelegate.swift in Sources */,
 				94ADC22B250A1B03002C095E /* WeatherDetail2.swift in Sources */,
 				942A1969250A330C00C507C2 /* Temp.swift in Sources */,
 				94ADC22A250A1B03002C095E /* Coord.swift in Sources */,
+				9489CBA3250B657D001755B5 /* BasicViewController.swift in Sources */,
 				94ADC226250A1B03002C095E /* Wind.swift in Sources */,
+				9489CBA7250B68C0001755B5 /* InitialViewController+Functionality.swift in Sources */,
 				9489CB99250A7BD5001755B5 /* weatherGR.xcdatamodeld in Sources */,
 				942A1976250A63DC00C507C2 /* LocationManager.swift in Sources */,
 				94ADC228250A1B03002C095E /* Clouds.swift in Sources */,
+				9489CBA9250B6C39001755B5 /* Date+Extension.swift in Sources */,
 				942A1970250A552700C507C2 /* Float+Extension.swift in Sources */,
 				942A196B250A330C00C507C2 /* Daily.swift in Sources */,
 			);

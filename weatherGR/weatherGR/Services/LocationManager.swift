@@ -10,7 +10,7 @@ import UIKit
 import CoreLocation
 
 class LocationManager: NSObject, CLLocationManagerDelegate {
-
+        //Singleton for location
         static let shared = LocationManager()
         var coordinates: CLLocationCoordinate2D?
         let locationManager : CLLocationManager
@@ -24,7 +24,7 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
             locationManager.distanceFilter = kCLLocationAccuracyHundredMeters
             locationManager.delegate = self
         }
-
+        //Start location manager with checking permissions
         func start(locationInfoCallBack:@escaping ((_ info:LocationInformation)->()), authorizationStatusCallBack: ((_ status: CLAuthorizationStatus)->())? = nil, requestWhenInUse: Bool = false) {
             self.locationInfoCallBack = locationInfoCallBack
             self.authorizationStatusCallBack = authorizationStatusCallBack

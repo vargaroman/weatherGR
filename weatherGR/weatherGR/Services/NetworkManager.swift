@@ -9,6 +9,8 @@
 import UIKit
 
 class NetworkManager {
+        
+    //API calls body with parameters
     
         func getActualWeather(placeName: String, completionHandler: @escaping(WeatherDetail2)->Void) {
                 

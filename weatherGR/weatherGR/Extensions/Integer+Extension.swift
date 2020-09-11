@@ -9,14 +9,16 @@
 import Foundation
 
 extension Double{
-    func getDateFromTimeStamp() -> String {
-
+    func getStringDateFromTimeStamp() -> String {
         let date = NSDate(timeIntervalSince1970: self)
-
         let dayTimePeriodFormatter = DateFormatter()
         dayTimePeriodFormatter.dateFormat = "dd.M."
-
         let dateString = dayTimePeriodFormatter.string(from: date as Date)
         return dateString
+    }
+    
+    func getDateFromTimeStamp()->Date{
+        let date = NSDate(timeIntervalSince1970: self)
+        return date as Date
     }
 }

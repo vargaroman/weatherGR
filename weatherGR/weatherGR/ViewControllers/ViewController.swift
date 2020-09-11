@@ -10,12 +10,18 @@ import UIKit
 import CoreLocation
 import CoreData
 
-class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate,CLLocationManagerDelegate  {
+class ViewController: BasicViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate,CLLocationManagerDelegate, GetLocationProtocolDelegate  {
+    func getMyLocation() {
+        LocationManager.shared.start()
+        if let geo = LocationManager.shared.coordinates {
+            checkWeather(lat: String(geo.latitude), lon: String(geo.longitude))
+        }
+        LocationManager.shared.stop()
+    }
+    
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
-    @IBOutlet weak var temperatureLabel: UILabel!
-    @IBOutlet weak var placeLabel: UILabel!
     @IBOutlet weak var weatherImageView: UIImageView!
     
     var currentWeather: WeatherDetail2?
@@ -33,18 +39,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         } else {
             checkWeather(placeName: "Kosice")
         }
-        // Do any additional setup after loading the view.
+        searchBar.barTintColor = UIColor.clear
     }
     
-    @objc func historyButtonTapped(){
-        self.performSegue(withIdentifier: "goToHistory", sender: searchHistory)
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "goToHistory" {
-            let vc = segue.destination as? HistoryViewController
-            vc?.history = sender as! [NSManagedObject]
-        }
+    override func viewDidAppear(_ animated: Bool) {
+        self.searchBar.backgroundColor = UIColor.clear
+        self.searchBar.searchTextField.attributedPlaceholder = NSAttributedString(string: "Enter city...", attributes: [NSAttributedString.Key.foregroundColor : UIColor.white])
+        self.searchBar.searchTextField.textColor = UIColor.white
+
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -67,73 +69,46 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
       }
         
     }
+    
+    //Action for button at rightup corner
+    @objc func historyButtonTapped(){
+        self.performSegue(withIdentifier: "goToHistory", sender: searchHistory)
+    }
+    
+    //Passing Data for next view controller
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "goToHistory" {
+            let vc = segue.destination as? HistoryViewController
+            vc?.history = sender as! [NSManagedObject]
+        }
+    }
 
+    //MARK: TableView
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return dailyWeather?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "simpleWeatherCell") as! DailyWeatherTableViewCell
-        cell.dayLabel.text = dailyWeather?[indexPath.row].dt?.getDateFromTimeStamp() ?? "0"
-        cell.rainProbabilityLabel.text = dailyWeather?[indexPath.row].pop?.getProbability()
-        cell.forecastLabel.text = dailyWeather?[indexPath.row].weather?.first?.main ?? ""
-        cell.temperatureLabel.text = "\(dailyWeather?[indexPath.row].temp?.max?.rounded() ?? 0)"+" \\ " + "\(dailyWeather?[indexPath.row].temp?.min?.rounded() ?? 0)"
-
-        return cell
-    }
-    
-    func checkWeather(placeName: String) {
-        NetworkManager().getActualWeather(placeName: placeName) { [weak self] (weather) in
-            self?.currentWeather = weather
-            DispatchQueue.main.async {
-                self?.temperatureLabel.text = "\(weather.main?.temp?.rounded() ?? 0) ºC"
-                self?.setBackgroundImage(weather: weather.weather?.first?.main ?? "")
-                self?.placeLabel.text = weather.name ?? ""
-                self?.checkWeatherForDays()
-            }
+        if indexPath.row == 0 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "todayWeatherCell") as! TodayWeatherTableViewCell
+            cell.placeLabel.text = currentWeather?.name ?? ""
+            cell.temperatureLabel.text = String(format: "%.0f"+" ºC",currentWeather?.main?.temp ?? 0)
+            cell.getLocationDelegate = self
+            return cell
+        } else {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "simpleWeatherCell") as! DailyWeatherTableViewCell
+            cell.dayLabel.text = dailyWeather?[indexPath.row].dt?.getDateFromTimeStamp().dayOfWeek() ?? ""
+            cell.rainProbabilityLabel.text = dailyWeather?[indexPath.row].pop?.getProbability()
+            cell.forecastLabel.text = dailyWeather?[indexPath.row].weather?.first?.main ?? ""
+            cell.dayTemperatureLabel.text = String(format: "%.0f"+" ºC",dailyWeather?[indexPath.row].temp?.day?.rounded() ?? 0)
+            cell.nightTemperatureLabel.text = String(format: "%.0f"+" ºC",dailyWeather?[indexPath.row].temp?.night?.rounded() ?? 0)
+            cell.forecastIconImageView.image = UIImage(named: getForecastIcon(forecast: dailyWeather?[indexPath.row].weather?.first?.main ?? ""))
+            return cell
         }
     }
     
-    func checkWeather(lat: String, lon: String) {
-        NetworkManager().getActualWeather(lat: lat, lon: lon) { [weak self] (weather) in
-            self?.currentWeather = weather
-            DispatchQueue.main.async {
-                self?.temperatureLabel.text = "\(weather.main?.temp?.rounded() ?? 0) ºC"
-                self?.setBackgroundImage(weather: weather.weather?.first?.main ?? "")
-                self?.placeLabel.text = weather.name ?? ""
-                self?.checkWeatherForDays()
-            }
-        }
-    }
-    
-    func checkWeatherForDays(){
-        NetworkManager().getWeatherForNextDays(lon: "\(currentWeather?.coord?.lon ?? 0)", lat: "\(currentWeather?.coord?.lat ?? 0)") { [weak self] (weatherDaily) in
-            self?.dailyWeather = weatherDaily
-            DispatchQueue.main.async {
-                self?.tableView.reloadData()
-            }
-        }
-    }
-    
-    func setBackgroundImage(weather: String){
-        print(weather)
-        switch weather {
-        case "Drizzle":
-            self.weatherImageView.image = UIImage(named: "Drizzle")
-        case "Thunderstorm":
-            self.weatherImageView.image = UIImage(named: "Thundering")
-        case "Rain":
-            self.weatherImageView.image = UIImage(named: "Rainy")
-        case "Snow":
-            self.weatherImageView.image = UIImage(named: "Snowing")
-        case "Clouds":
-            self.weatherImageView.image = UIImage(named: "Cloudy")
-        case "Clear":
-            self.weatherImageView.image = UIImage(named: "ClearSky")
-        default:
-            print("error")
-        }
-    }
+    //MARK: SearchBar
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
         checkWeather(placeName: searchBar.text ?? "")
@@ -141,8 +116,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         checkWeather(placeName: searchBar.text ?? "")
         save(text: searchBar.text ?? "")
+        self.dismissKeyboard()
+        self.searchBar.text = ""
     }
     
+    //MARK: CoreDataHistory
     func save(text: String) {
         guard let appDelegate =
         UIApplication.shared.delegate as? AppDelegate else {
