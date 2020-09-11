@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MapKit
 
 class NetworkManager {
         
@@ -82,5 +83,11 @@ class NetworkManager {
             }
         })
         task.resume()
+    }
+    
+    func getStaticMapImage(location: CLLocationCoordinate2D) ->NSURL {
+        let staticMapUrl = Constants.googleStaticMapApiLink+"\(location.latitude),\(location.longitude)&zoom=8&size=250x100&key="+Constants.googleStaticMapApiKey
+        let mapUrl: NSURL = NSURL(string: staticMapUrl)!
+        return mapUrl
     }
 }

@@ -10,8 +10,14 @@ import UIKit
 import CoreLocation
 import CoreData
 
-class ViewController: BasicViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate,CLLocationManagerDelegate, GetLocationProtocolDelegate  {
+class ViewController: BasicViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate,CLLocationManagerDelegate, GetLocationProtocolDelegate, MapPressedDelegate  {
+    func passImageToTable(coordinates: CLLocationCoordinate2D, mapImage: UIImage) {
+        self.mapImage = mapImage
+        self.checkWeather(lat: String(coordinates.latitude), lon: String(coordinates.longitude))
+    }
+    
     func getMyLocation() {
+        self.mapImage = nil
         LocationManager.shared.start()
         if let geo = LocationManager.shared.coordinates {
             checkWeather(lat: String(geo.latitude), lon: String(geo.longitude))
@@ -27,12 +33,13 @@ class ViewController: BasicViewController, UITableViewDelegate, UITableViewDataS
     var currentWeather: WeatherDetail2?
     var dailyWeather: [Daily]?
     var searchHistory: [NSManagedObject] = []
+    var mapImage: UIImage?
+    var mapVC: MapViewController?
 
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.title = "WeatherGR"
-        self.navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(named: "historyIcon"), style: .plain, target: self, action: #selector(historyButtonTapped))
         searchBar.delegate = self
         if let geoLocation = LocationManager.shared.coordinates {
             checkWeather(lat: String(geoLocation.latitude), lon: String(geoLocation.longitude))
@@ -40,6 +47,8 @@ class ViewController: BasicViewController, UITableViewDelegate, UITableViewDataS
             checkWeather(placeName: "Kosice")
         }
         searchBar.barTintColor = UIColor.clear
+        mapVC = tabBarController?.viewControllers?[1] as? MapViewController
+        mapVC?.mapPressedDelegate = self
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -48,45 +57,19 @@ class ViewController: BasicViewController, UITableViewDelegate, UITableViewDataS
         self.searchBar.searchTextField.textColor = UIColor.white
 
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-      super.viewWillAppear(animated)
-      
-      guard let appDelegate =
-        UIApplication.shared.delegate as? AppDelegate else {
-          return
-      }
-        let managedContext =
-        appDelegate.persistentContainer.viewContext
-      
-      let fetchRequest =
-        NSFetchRequest<NSManagedObject>(entityName: "SearchHistory")
-      
-    do {
-        searchHistory = try managedContext.fetch(fetchRequest)
-      } catch let error as NSError {
-        print("Could not fetch. \(error), \(error.userInfo)")
-      }
-        
-    }
-    
-    //Action for button at rightup corner
-    @objc func historyButtonTapped(){
-        self.performSegue(withIdentifier: "goToHistory", sender: searchHistory)
-    }
-    
-    //Passing Data for next view controller
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "goToHistory" {
-            let vc = segue.destination as? HistoryViewController
-            vc?.history = sender as! [NSManagedObject]
-        }
-    }
 
     //MARK: TableView
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dailyWeather?.count ?? 0
+        if section == 1 {
+            return 1
+        } else if section == 2 && mapImage == nil {
+            return 0
+        } else if section == 2 && mapImage != nil{
+            return 1
+        } else {
+            return dailyWeather?.count ?? 0
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -96,6 +79,17 @@ class ViewController: BasicViewController, UITableViewDelegate, UITableViewDataS
             cell.temperatureLabel.text = String(format: "%.0f"+" ºC",currentWeather?.main?.temp ?? 0)
             cell.getLocationDelegate = self
             return cell
+        } else if indexPath.row == 1 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "mapViewCell") as! MapFrameTableViewCell
+                if let image = mapImage {
+                    cell.mapImageView.image = image
+                    cell.isHidden = false
+                    return cell
+                } else {
+                    mapVC?.rect = cell.mapImageView.bounds
+                    cell.isHidden = true
+                    return cell
+            }
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "simpleWeatherCell") as! DailyWeatherTableViewCell
             cell.dayLabel.text = dailyWeather?[indexPath.row].dt?.getDateFromTimeStamp().dayOfWeek() ?? ""
@@ -117,6 +111,7 @@ class ViewController: BasicViewController, UITableViewDelegate, UITableViewDataS
         checkWeather(placeName: searchBar.text ?? "")
         save(text: searchBar.text ?? "")
         self.dismissKeyboard()
+        self.mapImage = nil
         self.searchBar.text = ""
     }
     

@@ -18,6 +18,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         LocationManager.shared.start()
+        
+//        let tabBar = UITabBar.appearance()
+//        tabBar.barTintColor = UIColor.clear
+//        tabBar.backgroundImage = UIImage()
+//        tabBar.shadowImage = UIImage()
+        let tabBar = UITabBar.appearance()
+        tabBar.isTranslucent = true
+        tabBar.backgroundImage = UIImage()
+        tabBar.barTintColor = .clear
+        tabBar.backgroundColor = UIColor(white: 1, alpha: 0.7) // here is your tabBar color
+        tabBar.layer.backgroundColor = UIColor.clear.cgColor
+        let blurEffect = UIBlurEffect(style: .regular) // here you can change blur style
+        let blurView = UIVisualEffectView(effect: blurEffect)
+        blurView.frame = tabBar.bounds
+        blurView.autoresizingMask = .flexibleWidth
+        tabBar.insertSubview(blurView, at: 0)
         return true
     }
 
