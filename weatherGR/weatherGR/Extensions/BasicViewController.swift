@@ -10,6 +10,7 @@ import UIKit
 
 class BasicViewController: UIViewController {
     
+    var loaderActive = false
     weak var scrollViewForKeyboard: UIScrollView?
     var sideMenuFlow = false
     var keyboardCancelTap: UITapGestureRecognizer?
@@ -96,6 +97,30 @@ class BasicViewController: UIViewController {
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
+    
+    func showLoader() {
+        if !loaderActive {
+            loaderActive = true
+            let alert = UIAlertController(title: nil, message: "Please wait...", preferredStyle: .alert)
+        
+            let loadingIndicator = UIActivityIndicatorView(frame: CGRect(x: 10, y: 5, width: 50, height: 50))
+            loadingIndicator.hidesWhenStopped = true
+            loadingIndicator.style = UIActivityIndicatorView.Style.medium
+            loadingIndicator.color = UIColor.secondaryColor
+            loadingIndicator.startAnimating();
+
+            alert.view.addSubview(loadingIndicator)
+            present(alert, animated: true, completion: nil)
+        }
+    }
+    
+    func hideLoader(animated: Bool = true) {
+        if loaderActive{
+            self.dismiss(animated: true, completion: nil)
+            loaderActive = false
+        }
+    }
+    
 }
 
 extension BasicViewController: UIGestureRecognizerDelegate {

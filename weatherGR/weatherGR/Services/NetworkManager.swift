@@ -23,6 +23,9 @@ class NetworkManager {
                 return
             }
             guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+                if let resp = response as? HTTPURLResponse{
+                    print("Error \(resp.statusCode)")
+                }
                 return
             }
             if let data = data,

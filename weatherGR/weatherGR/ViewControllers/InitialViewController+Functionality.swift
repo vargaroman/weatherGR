@@ -24,6 +24,7 @@ extension ViewController: HistoryRowPressedProtocolDelegate {
                 self?.checkWeatherForDays()
             }
         }
+        self.hideLoader()
     }
     
     /// WeatherAPI call by coordinates then setup for whole view
@@ -38,6 +39,7 @@ extension ViewController: HistoryRowPressedProtocolDelegate {
                 self?.checkWeatherForDays()
             }
         }
+        self.hideLoader()
     }
     
     /// WeatherAPI call by coordinates which returns weather for next 7 days then setup tableview

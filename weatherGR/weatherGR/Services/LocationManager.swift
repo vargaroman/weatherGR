@@ -20,8 +20,8 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         override init() {
             locationManager = CLLocationManager()
             super.init()
-            locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
-            locationManager.distanceFilter = kCLLocationAccuracyHundredMeters
+            locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            locationManager.distanceFilter = kCLLocationAccuracyNearestTenMeters
             locationManager.delegate = self
         }
         //Start location manager with checking permissions
