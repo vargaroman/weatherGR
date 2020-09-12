@@ -38,14 +38,8 @@ class ViewController: BasicViewController, UITableViewDelegate, UITableViewDataS
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
         self.title = "WeatherGR"
         searchBar.delegate = self
-        if let geoLocation = LocationManager.shared.coordinates {
-            checkWeather(lat: String(geoLocation.latitude), lon: String(geoLocation.longitude))
-        } else {
-            checkWeather(placeName: "Kosice")
-        }
         mapVC = tabBarController?.viewControllers?[1] as? MapViewController
         mapVC?.mapPressedDelegate = self
         let historyVC = tabBarController?.viewControllers?[2] as? HistoryViewController
@@ -57,6 +51,12 @@ class ViewController: BasicViewController, UITableViewDelegate, UITableViewDataS
         self.searchBar.searchTextField.attributedPlaceholder = NSAttributedString(string: "Enter city...", attributes: [NSAttributedString.Key.foregroundColor : UIColor.primaryColor])
         self.searchBar.searchTextField.backgroundColor = UIColor.lightNavyColor
         self.searchBar.searchTextField.textColor = UIColor.primaryColor
+        
+        if let geoLocation = LocationManager.shared.coordinates {
+            checkWeather(lat: String(geoLocation.latitude), lon: String(geoLocation.longitude))
+        } else {
+            checkWeather(placeName: "Kosice")
+        }
 
     }
 
@@ -99,7 +99,12 @@ class ViewController: BasicViewController, UITableViewDelegate, UITableViewDataS
             cell.layer.borderWidth = 2
             cell.isHidden = false
             return cell
-        } else {
+        } //else if indexPath.row == 1 && mapImage == nil {
+//            let cell = tableView.dequeueReusableCell(withIdentifier: "mapViewCell") as! MapFrameTableViewCell
+//            mapVC?.rect = cell.mapImageView.bounds
+//            return cell
+        //}
+    else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "simpleWeatherCell") as! DailyWeatherTableViewCell
             cell.dayLabel.text = dailyWeather?[indexPath.row].dt?.getDateFromTimeStamp().dayOfWeek() ?? ""
             cell.rainProbabilityLabel.text = dailyWeather?[indexPath.row].pop?.getProbability()
@@ -110,11 +115,16 @@ class ViewController: BasicViewController, UITableViewDelegate, UITableViewDataS
             return cell
         }
     }
+//    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+//        if indexPath.row == 1 && mapImage == nil {
+//            return 0
+//        } else {
+//            return UITableView.automaticDimension
+//        }
+//    }
+//    
     //MARK: SearchBar
     
-    func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-        checkWeather(placeName: searchBar.text ?? "")
-    }
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         checkWeather(placeName: searchBar.text ?? "")
         save(text: searchBar.text ?? "")

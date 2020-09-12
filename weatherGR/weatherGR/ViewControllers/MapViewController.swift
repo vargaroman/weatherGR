@@ -17,7 +17,7 @@ class MapViewController: BasicViewController, MKMapViewDelegate {
 
     @IBOutlet weak var mapView: MKMapView!
     var mapPressedDelegate: MapPressedDelegate?
-    var rect = CGRect()
+    var rect = CGRect(x: 0, y: 0, width: 375, height: 140)
 
     
     override func viewDidLoad() {
@@ -30,6 +30,7 @@ class MapViewController: BasicViewController, MKMapViewDelegate {
     }
     
     @objc func getCoordinatePressOnMap(sender: UITapGestureRecognizer) {
+        self.showLoader()
         let touchLocation = sender.location(in: mapView)
         let locationCoordinate = mapView.convert(touchLocation, toCoordinateFrom: mapView)
         let annotation = MKPointAnnotation()
@@ -59,8 +60,10 @@ class MapViewController: BasicViewController, MKMapViewDelegate {
                 self.mapPressedDelegate?.passImageToTable(coordinates: locationCoordinate, mapImage: image)
                 self.tabBarController?.selectedIndex = 0
                 self.mapView.removeAnnotation(annotation)
+                self.hideLoader()
             } else {
                 print("oooops")
+                self.hideLoader()
             }
         }
     }

@@ -23,12 +23,10 @@ class NetworkManager {
                 return
             }
             guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
-                print(response)
                 return
             }
             if let data = data,
                 let weatherResult = try? JSONDecoder().decode(WeatherDetail2.self, from: data){
-                print(weatherResult.main?.temp)
                     completionHandler(weatherResult)
             }
         })
@@ -45,7 +43,6 @@ class NetworkManager {
                 return
             }
             guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
-                print(response)
                 return
             }
             if let data = data {
@@ -73,12 +70,10 @@ class NetworkManager {
                 return
             }
             guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
-                print(response)
                 return
             }
             if let data = data,
                 let weatherResult = try? JSONDecoder().decode(WeatherDetail2.self, from: data){
-                print(weatherResult.main?.temp)
                     completionHandler(weatherResult)
             }
         })

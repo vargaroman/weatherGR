@@ -96,7 +96,6 @@ class BasicViewController: UIViewController {
     deinit {
         NotificationCenter.default.removeObserver(self)
     }
-    
 }
 
 extension BasicViewController: UIGestureRecognizerDelegate {

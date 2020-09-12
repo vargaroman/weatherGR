@@ -17,6 +17,7 @@ extension ViewController: HistoryRowPressedProtocolDelegate {
     /// WeatherAPI call by place name then setup for whole view
     /// - Parameter placeName: City/place name
     func checkWeather(placeName: String) {
+        self.showLoader()
         NetworkManager().getActualWeather(placeName: placeName) { [weak self] (weather) in
             self?.currentWeather = weather
             DispatchQueue.main.async {
@@ -30,6 +31,7 @@ extension ViewController: HistoryRowPressedProtocolDelegate {
     ///   - lat: latitude
     ///   - lon: longitude
     func checkWeather(lat: String, lon: String) {
+        self.showLoader()
         NetworkManager().getActualWeather(lat: lat, lon: lon) { [weak self] (weather) in
             self?.currentWeather = weather
             DispatchQueue.main.async {
@@ -44,6 +46,7 @@ extension ViewController: HistoryRowPressedProtocolDelegate {
             self?.dailyWeather = weatherDaily
             DispatchQueue.main.async {
                 self?.tableView.reloadData()
+                self?.hideLoader()
             }
         }
     }
