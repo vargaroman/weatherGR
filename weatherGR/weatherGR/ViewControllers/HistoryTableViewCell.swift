@@ -12,6 +12,7 @@ class HistoryTableViewCell: UITableViewCell {
 
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var currentForecastImageView: UIImageView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -22,6 +23,10 @@ class HistoryTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
+    }
+    
+    func setForecastImage(image: UIImage) {
+        self.currentForecastImageView.image = image
     }
 
 }

@@ -8,52 +8,11 @@
 
 import UIKit
 
-extension ViewController {
-    
-    /// Function for icon selection in tableview for nextdays forecast
-    /// - Parameter forecast: String which describe weather
-    /// - Returns: name of imageIcon
-    func getForecastIcon(forecast: String)->String{
-        switch forecast {
-            case "Drizzle":
-                return "RainIcon"
-            case "Thunderstorm":
-                return "RainIcon"
-            case "Rain":
-                return "RainIcon"
-            case "Snow":
-                return "SnowIcon"
-            case "Clouds":
-                return "RainIcon"
-            case "Clear":
-                return "SunnyIcon"
-            default:
-                return "questionMarkIcon"
-
-        }
+extension ViewController: HistoryRowPressedProtocolDelegate {
+    func historyRowPressed(placeName: String) {
+        checkWeather(placeName: placeName)
     }
     
-    /// Function set app background
-    /// - Parameter weather: weather description string
-    func setBackgroundImage(weather: String){
-        print(weather)
-        switch weather {
-        case "Drizzle":
-            self.weatherImageView.image = UIImage(named: "Drizzle")
-        case "Thunderstorm":
-            self.weatherImageView.image = UIImage(named: "Thundering")
-        case "Rain":
-            self.weatherImageView.image = UIImage(named: "Rainy")
-        case "Snow":
-            self.weatherImageView.image = UIImage(named: "Snowing")
-        case "Clouds":
-            self.weatherImageView.image = UIImage(named: "Cloudy")
-        case "Clear":
-            self.weatherImageView.image = UIImage(named: "ClearSky")
-        default:
-            print("error")
-        }
-    }
     
     /// WeatherAPI call by place name then setup for whole view
     /// - Parameter placeName: City/place name
@@ -61,7 +20,6 @@ extension ViewController {
         NetworkManager().getActualWeather(placeName: placeName) { [weak self] (weather) in
             self?.currentWeather = weather
             DispatchQueue.main.async {
-                self?.setBackgroundImage(weather: weather.weather?.first?.main ?? "")
                 self?.checkWeatherForDays()
             }
         }
@@ -75,7 +33,6 @@ extension ViewController {
         NetworkManager().getActualWeather(lat: lat, lon: lon) { [weak self] (weather) in
             self?.currentWeather = weather
             DispatchQueue.main.async {
-                self?.setBackgroundImage(weather: weather.weather?.first?.main ?? "")
                 self?.checkWeatherForDays()
             }
         }

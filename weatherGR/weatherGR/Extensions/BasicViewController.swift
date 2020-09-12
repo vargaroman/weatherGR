@@ -21,10 +21,12 @@ class BasicViewController: UIViewController {
         keyboardCancelTap?.cancelsTouchesInView = false
         keyboardCancelTap?.delegate = self
         view.addGestureRecognizer(keyboardCancelTap!)
+        
+        self.setNeedsStatusBarAppearanceUpdate()
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
-        return UIStatusBarStyle.lightContent
+        return UIStatusBarStyle.darkContent
     }
     
     override func viewWillAppear(_ animated: Bool) {

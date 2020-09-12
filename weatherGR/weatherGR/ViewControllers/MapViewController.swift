@@ -45,12 +45,9 @@ class MapViewController: BasicViewController, MKMapViewDelegate {
             if let snapshot = snapshot {
                 let image = UIGraphicsImageRenderer(size: snapshotOptions.size).image { _ in
                     snapshot.image.draw(at: .zero)
-
                     let pinView = MKPinAnnotationView(annotation: nil, reuseIdentifier: nil)
                     let pinImage = pinView.image
-
                     var point = snapshot.point(for: locationCoordinate)
-
                     if self.rect.contains(point) {
                         point.x -= pinView.bounds.width / 2
                         point.y -= pinView.bounds.height / 2

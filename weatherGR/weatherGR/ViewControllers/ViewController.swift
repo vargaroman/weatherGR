@@ -28,17 +28,17 @@ class ViewController: BasicViewController, UITableViewDelegate, UITableViewDataS
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
-    @IBOutlet weak var weatherImageView: UIImageView!
     
     var currentWeather: WeatherDetail2?
     var dailyWeather: [Daily]?
     var searchHistory: [NSManagedObject] = []
     var mapImage: UIImage?
     var mapVC: MapViewController?
-
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
+
         self.title = "WeatherGR"
         searchBar.delegate = self
         if let geoLocation = LocationManager.shared.coordinates {
@@ -46,28 +46,30 @@ class ViewController: BasicViewController, UITableViewDelegate, UITableViewDataS
         } else {
             checkWeather(placeName: "Kosice")
         }
-        searchBar.barTintColor = UIColor.clear
         mapVC = tabBarController?.viewControllers?[1] as? MapViewController
         mapVC?.mapPressedDelegate = self
+        let historyVC = tabBarController?.viewControllers?[2] as? HistoryViewController
+        historyVC?.historyPressedDelegate = self
     }
     
     override func viewDidAppear(_ animated: Bool) {
         self.searchBar.backgroundColor = UIColor.clear
-        self.searchBar.searchTextField.attributedPlaceholder = NSAttributedString(string: "Enter city...", attributes: [NSAttributedString.Key.foregroundColor : UIColor.white])
-        self.searchBar.searchTextField.textColor = UIColor.white
+        self.searchBar.searchTextField.attributedPlaceholder = NSAttributedString(string: "Enter city...", attributes: [NSAttributedString.Key.foregroundColor : UIColor.primaryColor])
+        self.searchBar.searchTextField.backgroundColor = UIColor.lightNavyColor
+        self.searchBar.searchTextField.textColor = UIColor.primaryColor
 
     }
 
     //MARK: TableView
     
+
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section == 1 {
             return 1
-        } else if section == 2 && mapImage == nil {
-            return 0
-        } else if section == 2 && mapImage != nil{
+        } else if section == 2 {
             return 1
-        } else {
+        } else{
             return dailyWeather?.count ?? 0
         }
     }
@@ -75,21 +77,28 @@ class ViewController: BasicViewController, UITableViewDelegate, UITableViewDataS
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "todayWeatherCell") as! TodayWeatherTableViewCell
+            
             cell.placeLabel.text = currentWeather?.name ?? ""
             cell.temperatureLabel.text = String(format: "%.0f"+" ºC",currentWeather?.main?.temp ?? 0)
             cell.getLocationDelegate = self
+            cell.bottomCornerRadius(radius: 15)
+            cell.setBackgroundImage(weather: currentWeather?.weather?.first?.main ?? "")
+            cell.windSpeedLabel.text = String(format: "%.0f"+" m/s",currentWeather?.wind?.speed ?? 0)
+            cell.windDirectionLabel.text = currentWeather?.wind?.deg?.getWindDirection() ?? ""
+            cell.sunSetLabel.text = currentWeather?.sys?.sunset?.getHourFromTimeStamp()
+            cell.sunRiseLabel.text = currentWeather?.sys?.sunrise?.getHourFromTimeStamp()
             return cell
-        } else if indexPath.row == 1 {
+        } else if indexPath.row == 1 && mapImage != nil{
+            let image = mapImage
             let cell = tableView.dequeueReusableCell(withIdentifier: "mapViewCell") as! MapFrameTableViewCell
-                if let image = mapImage {
-                    cell.mapImageView.image = image
-                    cell.isHidden = false
-                    return cell
-                } else {
-                    mapVC?.rect = cell.mapImageView.bounds
-                    cell.isHidden = true
-                    return cell
-            }
+            mapVC?.rect = cell.mapImageView.bounds
+            cell.mapImageView.image = image
+            cell.clipsToBounds = true
+            cell.layer.cornerRadius = 15
+            cell.layer.borderColor = UIColor.secondaryColor.cgColor
+            cell.layer.borderWidth = 2
+            cell.isHidden = false
+            return cell
         } else {
             let cell = tableView.dequeueReusableCell(withIdentifier: "simpleWeatherCell") as! DailyWeatherTableViewCell
             cell.dayLabel.text = dailyWeather?[indexPath.row].dt?.getDateFromTimeStamp().dayOfWeek() ?? ""
@@ -97,11 +106,10 @@ class ViewController: BasicViewController, UITableViewDelegate, UITableViewDataS
             cell.forecastLabel.text = dailyWeather?[indexPath.row].weather?.first?.main ?? ""
             cell.dayTemperatureLabel.text = String(format: "%.0f"+" ºC",dailyWeather?[indexPath.row].temp?.day?.rounded() ?? 0)
             cell.nightTemperatureLabel.text = String(format: "%.0f"+" ºC",dailyWeather?[indexPath.row].temp?.night?.rounded() ?? 0)
-            cell.forecastIconImageView.image = UIImage(named: getForecastIcon(forecast: dailyWeather?[indexPath.row].weather?.first?.main ?? ""))
+            cell.forecastIconImageView.image = UIImage(named: dailyWeather?[indexPath.row].weather?.first?.main?.getForecastIcon() ?? "")
             return cell
         }
     }
-    
     //MARK: SearchBar
     
     func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
