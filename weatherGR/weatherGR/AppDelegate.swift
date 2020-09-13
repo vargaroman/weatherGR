@@ -14,15 +14,10 @@ import CoreLocation
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         LocationManager.shared.start()
         
-//        let tabBar = UITabBar.appearance()
-//        tabBar.barTintColor = UIColor.clear
-//        tabBar.backgroundImage = UIImage()
-//        tabBar.shadowImage = UIImage()
         let tabBar = UITabBar.appearance()
         tabBar.isTranslucent = true
         tabBar.backgroundImage = UIImage()
@@ -58,6 +53,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillEnterForeground(_ application: UIApplication) {
         LocationManager.shared.start(locationInfoCallBack:{
             (info) in
+            guard let latitude = info.latitude, let longitude = info.longitude else{return}
+            LocationManager.shared.coordinates = CLLocationCoordinate2D(latitude: latitude, longitude: longitude)
         }
     )}
     // MARK: - Core Data stack

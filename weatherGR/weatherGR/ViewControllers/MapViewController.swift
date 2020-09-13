@@ -30,7 +30,6 @@ class MapViewController: BasicViewController, MKMapViewDelegate {
     }
     
     @objc func getCoordinatePressOnMap(sender: UITapGestureRecognizer) {
-        self.showLoader()
         let touchLocation = sender.location(in: mapView)
         let locationCoordinate = mapView.convert(touchLocation, toCoordinateFrom: mapView)
         let annotation = MKPointAnnotation()
@@ -60,10 +59,8 @@ class MapViewController: BasicViewController, MKMapViewDelegate {
                 self.mapPressedDelegate?.passImageToTable(coordinates: locationCoordinate, mapImage: image)
                 self.tabBarController?.selectedIndex = 0
                 self.mapView.removeAnnotation(annotation)
-                self.hideLoader()
             } else {
                 print("oooops")
-                self.hideLoader()
             }
         }
     }

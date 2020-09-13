@@ -10,7 +10,7 @@ import UIKit
 import CoreLocation
 import CoreData
 
-class ViewController: BasicViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate,CLLocationManagerDelegate, GetLocationProtocolDelegate, MapPressedDelegate  {
+class ViewController: BasicViewController, UITableViewDelegate, UITableViewDataSource, UISearchBarDelegate, GetLocationProtocolDelegate, MapPressedDelegate  {
     func passImageToTable(coordinates: CLLocationCoordinate2D, mapImage: UIImage) {
         self.mapImage = mapImage
         self.checkWeather(lat: String(coordinates.latitude), lon: String(coordinates.longitude))
@@ -24,7 +24,6 @@ class ViewController: BasicViewController, UITableViewDelegate, UITableViewDataS
         }
         LocationManager.shared.stop()
     }
-    
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var searchBar: UISearchBar!
@@ -34,6 +33,7 @@ class ViewController: BasicViewController, UITableViewDelegate, UITableViewDataS
     var searchHistory: [NSManagedObject] = []
     var mapImage: UIImage?
     var mapVC: MapViewController?
+    var isInitialLoad: Bool = true
     
     
     override func viewDidLoad() {
@@ -52,13 +52,15 @@ class ViewController: BasicViewController, UITableViewDelegate, UITableViewDataS
         self.searchBar.searchTextField.backgroundColor = UIColor.lightNavyColor
         self.searchBar.searchTextField.textColor = UIColor.primaryColor
         
-        if let geoLocation = LocationManager.shared.coordinates {
-            checkWeather(lat: String(format: "%.4f", geoLocation.latitude), lon: String(format: "%.4f", geoLocation.longitude))
-        } else {
-            checkWeather(placeName: "Kosice")
+        if let geoLocation = LocationManager.shared.coordinates{
+            if isInitialLoad{
+                checkWeather(lat: String(geoLocation.latitude), lon: String(geoLocation.longitude))
+                isInitialLoad = false
+            }
+            
         }
-
     }
+    
 
     //MARK: TableView
     

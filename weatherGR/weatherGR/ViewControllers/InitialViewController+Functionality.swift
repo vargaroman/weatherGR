@@ -48,7 +48,6 @@ extension ViewController: HistoryRowPressedProtocolDelegate {
             self?.dailyWeather = weatherDaily
             DispatchQueue.main.async {
                 self?.tableView.reloadData()
-                self?.hideLoader()
             }
         }
     }

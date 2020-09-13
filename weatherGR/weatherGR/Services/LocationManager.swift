@@ -49,7 +49,6 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
             guard let mostRecentLocation = locations.last else {
                 return
             }
-            print(mostRecentLocation)
             let info = LocationInformation()
             info.latitude = mostRecentLocation.coordinate.latitude
             info.longitude = mostRecentLocation.coordinate.longitude
