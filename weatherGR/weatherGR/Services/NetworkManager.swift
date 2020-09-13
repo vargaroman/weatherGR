@@ -15,7 +15,7 @@ class NetworkManager {
     
         func getActualWeather(placeName: String, completionHandler: @escaping(WeatherDetail2)->Void) {
                 
-        guard let fullURL = URL(string: Constants.weatherAPILink+"q="+placeName+"&units=metric"+"&appid="+Constants.weatherAPIKey) else {return}
+            guard let fullURL = URL(string: Constants.weatherAPILink+"q="+placeName.replaceSpace()+"&units=metric"+"&appid="+Constants.weatherAPIKey) else {return}
         
         let task = URLSession.shared.dataTask(with: fullURL, completionHandler: {(data,response,error) in
             if let error = error {

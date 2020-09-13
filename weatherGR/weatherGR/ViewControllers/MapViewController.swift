@@ -37,7 +37,7 @@ class MapViewController: BasicViewController, MKMapViewDelegate {
         mapView.addAnnotation(annotation)
         
         let snapshotOptions = MKMapSnapshotter.Options()
-        snapshotOptions.region = .init(center: locationCoordinate, span: .init(latitudeDelta: 0.1, longitudeDelta: 0.1))
+        snapshotOptions.region = .init(center: locationCoordinate, span: .init(latitudeDelta: 0.4, longitudeDelta: 0.4))
         snapshotOptions.scale = UIScreen.main.scale
         snapshotOptions.size = CGSize(width: 350, height: 150)
         let mapSnapshotter = MKMapSnapshotter.init(options: snapshotOptions)

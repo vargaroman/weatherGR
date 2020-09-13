@@ -18,6 +18,7 @@ extension ViewController: HistoryRowPressedProtocolDelegate {
     /// - Parameter placeName: City/place name
     func checkWeather(placeName: String) {
         self.showLoader()
+        self.save(text: placeName)
         NetworkManager().getActualWeather(placeName: placeName) { [weak self] (weather) in
             self?.currentWeather = weather
             DispatchQueue.main.async {
@@ -37,6 +38,7 @@ extension ViewController: HistoryRowPressedProtocolDelegate {
             self?.currentWeather = weather
             DispatchQueue.main.async {
                 self?.checkWeatherForDays()
+                self?.save(text: weather.name ?? "")
             }
         }
         self.hideLoader()

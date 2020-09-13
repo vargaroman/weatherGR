@@ -30,4 +30,8 @@ extension String {
                 return "questionMarkIcon"
         }
     }
+    
+    func replaceSpace() -> String{
+        return self.replacingOccurrences(of: " ", with: "+")
+    }
 }

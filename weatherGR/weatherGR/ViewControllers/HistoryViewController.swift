@@ -29,10 +29,12 @@ class HistoryViewController: BasicViewController, UITableViewDataSource, UITable
         let cell = tableView.dequeueReusableCell(withIdentifier: "historyCell") as! HistoryTableViewCell
         cell.cityLabel.text = historyArray[indexPath.row].city
         cell.dateLabel.text = historyArray[indexPath.row].date
-            self.getPlaceForecast(placeName: self.historyArray[indexPath.row].city) { (image) in
-                DispatchQueue.main.sync {
-                    cell.currentForecastImageView.image = image
-                }
+        
+        
+        self.getPlaceForecast(placeName: self.historyArray[indexPath.row].city) { (image) in
+            DispatchQueue.main.sync {
+                cell.currentForecastImageView.image = image
+            }
         }
         return cell
     }
@@ -78,7 +80,7 @@ class HistoryViewController: BasicViewController, UITableViewDataSource, UITable
     
     func getPlaceForecast(placeName: String, completionHandler: @escaping(UIImage)->Void){
         var image = UIImage()
-        NetworkManager().getActualWeather(placeName: placeName){ (weather) in
+        NetworkManager().getActualWeather(placeName: placeName.folding(options: .diacriticInsensitive, locale: .current)){ (weather) in
             if let weatherForecast = weather.weather?.first?.main{
                 image = UIImage(named: weatherForecast.getForecastIcon()) ?? UIImage()
                 completionHandler(image)

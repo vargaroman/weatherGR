@@ -116,7 +116,6 @@ class ViewController: BasicViewController, UITableViewDelegate, UITableViewDataS
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         checkWeather(placeName: searchBar.text ?? "")
-        save(text: searchBar.text ?? "")
         self.dismissKeyboard()
         self.mapImage = nil
         self.searchBar.text = ""
