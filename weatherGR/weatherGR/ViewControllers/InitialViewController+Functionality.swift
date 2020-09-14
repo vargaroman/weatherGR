@@ -19,7 +19,7 @@ extension ViewController: HistoryRowPressedProtocolDelegate {
     func checkWeather(placeName: String) {
         self.showLoader()
         self.save(text: placeName)
-        NetworkManager().getActualWeather(placeName: placeName) { [weak self] (weather) in
+        NetworkManager().getActualWeather(placeName: placeName.folding(options: .diacriticInsensitive, locale: .current)) { [weak self] (weather) in
             self?.currentWeather = weather
             DispatchQueue.main.async {
                 self?.checkWeatherForDays()
